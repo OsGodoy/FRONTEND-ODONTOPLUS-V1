@@ -1,0 +1,195 @@
+@import "tailwindcss";
+
+/* body {
+  overflow: hidden;
+} */
+
+/* ===== SCROLL GLOBAL MINIMALISTA ===== */
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+/* Chrome, Edge, Safari */
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+/* Track */
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Thumb (oculto por defecto) */
+*::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 9999px;
+  transition: background-color 0.3s ease;
+}
+
+/* Mostrar al hacer hover */
+*:hover::-webkit-scrollbar-thumb {
+  background-color: rgb(23, 37, 84);
+}
+
+/* Firefox hover */
+*:hover {
+  scrollbar-color: rgb(23, 37, 84) transparent;
+}
+
+/* TAMAÑOS DE TEXTOS */
+
+@layer utilities {
+  /* ===== XS ===== */
+  .text-responsive-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  @media (min-width: 768px) {
+    .text-responsive-xs {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+  }
+
+  /* ===== SM ===== */
+  .text-responsive-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .text-responsive-sm {
+      font-size: 1rem;
+      line-height: 1.5rem;
+    }
+  }
+
+  /* ===== BASE ===== */
+  .text-responsive-base {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .text-responsive-base {
+      font-size: 1.125rem;
+      line-height: 1.75rem;
+    }
+  }
+
+  /* ===== LG ===== */
+  .text-responsive-lg {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+  @media (min-width: 768px) {
+    .text-responsive-lg {
+      font-size: 1.25rem;
+      line-height: 1.75rem;
+    }
+  }
+
+  /* ===== XL ===== */
+  .text-responsive-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+  @media (min-width: 768px) {
+    .text-responsive-xl {
+      font-size: 1.5rem;
+      line-height: 2rem;
+    }
+  }
+
+  /* ===== 2XL ===== */
+  .text-responsive-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  @media (min-width: 768px) {
+    .text-responsive-2xl {
+      font-size: 1.875rem;
+      line-height: 2.25rem;
+    }
+  }
+
+  /* ===== 3XL ===== */
+  .text-responsive-3xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+  @media (min-width: 768px) {
+    .text-responsive-3xl {
+      font-size: 2.25rem;
+      line-height: 2.5rem;
+    }
+  }
+
+  /* ===== 4XL ===== */
+  .text-responsive-4xl {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+  @media (min-width: 768px) {
+    .text-responsive-4xl {
+      font-size: 3rem;
+      line-height: 1;
+    }
+  }
+
+  /* ===== 5XL ===== */
+  .text-responsive-5xl {
+    font-size: 3rem;
+    line-height: 1;
+  }
+  @media (min-width: 768px) {
+    .text-responsive-5xl {
+      font-size: 3.75rem;
+      line-height: 1;
+    }
+  }
+
+  /* ===== 6XL ===== */
+  .text-responsive-6xl {
+    font-size: 3.75rem;
+    line-height: 1;
+  }
+  @media (min-width: 768px) {
+    .text-responsive-6xl {
+      font-size: 4.5rem;
+      line-height: 1;
+    }
+  }
+
+  /* ===== 7XL ===== */
+  .text-responsive-7xl {
+    font-size: 4.5rem;
+    line-height: 1;
+  }
+  @media (min-width: 768px) {
+    .text-responsive-7xl {
+      font-size: 6rem;
+      line-height: 1;
+    }
+  }
+
+  /* ===== 8XL ===== */
+  .text-responsive-8xl {
+    font-size: 6rem;
+    line-height: 1;
+  }
+  @media (min-width: 768px) {
+    .text-responsive-8xl {
+      font-size: 8rem;
+      line-height: 1;
+    }
+  }
+
+  /* ===== 9XL ===== */
+  .text-responsive-9xl {
+    font-size: 8rem;
+    line-height: 1;
+  }
+}
