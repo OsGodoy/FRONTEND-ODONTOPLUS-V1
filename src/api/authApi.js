@@ -1,30 +1,21 @@
+import { postData } from "./apiFactory";
 import api from "./axios";
 
 export const login = async (credentials) => {
-  try {
-    const { data } = await api.post("/auth/login", credentials);
-    return data.data;
-  } catch (error) {
-    console.log(error.response?.data);
-    throw error;
-  }
+  return await postData("/auth/login", credentials, false);
 };
 
 export const logout = async () => {
-  const { data } = await api.post("/auth/logout");
-  return data.data;
+  return await postData("/auth/logout");
 };
 
 export const getMe = async () => {
   try {
     const { data } = await api.get("/auth/me");
-    console.log(data);
-
-    return data.data;
+    return data?.data ?? data;
   } catch (error) {
-    if (error.response?.status === 401) {
-      return null;
-    }
-    throw error;
+    if (error.response?.status === 401) return null;
+    console.error("Error real en getMe:", error);
+    return null;
   }
 };

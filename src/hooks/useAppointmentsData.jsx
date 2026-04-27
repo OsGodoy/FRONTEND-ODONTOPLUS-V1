@@ -6,61 +6,64 @@ import {
   updateAppointment,
   appointmentStatus,
 } from "../api/appointmentsApi";
+import { useGetData, useMutationData } from "./useQueryBase";
+import { updateData } from "../api/apiFactory";
 
-export const useAppointments = (filters = {}) => {
-  const queryClient = useQueryClient();
-
-  const {
-    data: appointmentsData,
-    isLoading,
-    isError,
-    error: queryError,
-  } = useQuery({
-    queryKey: queryKeys.appointments(filters),
-    queryFn: () => getAppointments(filters),
-  });
-
-  const createMutation = useMutation({
-    mutationFn: createAppointment,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["appointments"] });
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: updateAppointment,
-    onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["appointments"] });
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.appointment(variables.id),
-      });
-    },
-  });
-
-  const statusMutation = useMutation({
-    mutationFn: ({ id, status }) => appointmentStatus(id, status),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["appointments"] });
-    },
-  });
+export const useGetAppointments = (filters = {}) => {
+  const { data, isLoading, isError, error, isFetching, refetch } = useGetData(
+    queryKeys.appointments,
+    getAppointments,
+    filters,
+  );
 
   return {
-    appointments: appointmentsData ?? [],
-    isLoading,
-    isError,
+    appointments: data,
+    isAppointmentsLoading: isLoading,
+    isAppointmentsError: isError,
+    appointmentsError: error,
+    isAppointmentsFetching: isFetching,
+    refetchAppointments: refetch,
+  };
+};
 
-    createAppointment: createMutation.mutateAsync,
-    updateAppointment: updateMutation.mutateAsync,
-    updateStatus: statusMutation.mutateAsync,
+export const useCreateAppointment = () => {
+  const { execute, isPending, ...rest } = useMutationData(
+    queryKeys.appointments,
+    createAppointment,
+  );
 
-    isCreating: createMutation.isPending,
-    isUpdating: updateMutation.isPending,
-    isUpdatingStatus: statusMutation.isPending,
+  return {
+    createAppointment: execute,
+    isCreating: isPending,
+    ...rest,
+  };
+};
 
-    error:
-      createMutation.error ||
-      updateMutation.error ||
-      statusMutation.error ||
-      queryError,
+export const useUpdateAppointment = () => {
+  const { execute, executeAsync, isPending, ...rest } = useMutationData(
+    queryKeys.appointments,
+    updateAppointment,
+  );
+
+  return {
+    updateAppointment: execute,
+    updateAppointmentAsync: executeAsync,
+    isUpdating: isPending,
+    ...rest,
+  };
+};
+
+export const useUpdateStatus = (options = {}) => {
+  const { execute, executeAsync, isPending, ...rest } = useMutationData(
+    queryKeys.appointments,
+    ({ id, status }) => appointmentStatus(id, status),
+    options,
+  );
+
+  return {
+    updateStatus: execute,
+    updateStatusAsync: executeAsync,
+    isUpdatingStatus: isPending,
+    ...rest,
   };
 };

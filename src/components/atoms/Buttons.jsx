@@ -11,6 +11,17 @@ export const ButtonBorderAmber = ({ children, className = "", ...props }) => {
   );
 };
 
+export const ButtonBorderOrange = ({ children, className = "", ...props }) => {
+  return (
+    <button
+      className={`text-orange-400/90 border border-orange-400/90 rounded bg-orange-400/10 p-1 ${className} ${scaleFx("sm")}`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
 export const ButtonBorderWhite = ({ children, className = "", ...props }) => {
   return (
     <button

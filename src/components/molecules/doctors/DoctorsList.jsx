@@ -13,7 +13,7 @@ import { ButtonBorderRose, ButtonBorderWhite } from "../../atoms/Buttons";
 import { Link } from "react-router-dom";
 
 const DoctorsList = () => {
-  const { doctors, isLoading, isError } = useDoctors();
+  const { doctors, isDoctorsLoading, isDoctorsError } = useDoctors();
 
   const getDayName = (day) => {
     const days = [
@@ -30,7 +30,7 @@ const DoctorsList = () => {
 
   const formatTime = (time) => time.slice(0, 5);
 
-  if (isError) {
+  if (isDoctorsError) {
     return (
       <div className="flex items-center justify-center h-full">
         <ErrorPage />
@@ -87,7 +87,7 @@ const DoctorsList = () => {
         </DivContainerModal>
       </DivContainerCenter>
 
-      {isLoading ? (
+      {isDoctorsLoading ? (
         <div className="flex items-center justify-center h-full">
           <Loading />
         </div>

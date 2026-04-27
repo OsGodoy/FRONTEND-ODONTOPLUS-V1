@@ -1,6 +1,6 @@
+import { getData } from "./apiFactory";
 import api from "./axios";
 
 export const getAvailableDoctors = async (params) => {
-  const { data } = await api.get("/availability/available-doctors", { params });
-  return data.data;
+  return await getData("/availability/available-doctors", params);
 };

@@ -12,6 +12,7 @@ export const bgVariants = {
   "emerald-500": "hover:bg-emerald-500",
   "red-500": "hover:bg-red-500",
   "blue-600": "hover:bg-blue-600/50",
+  "blue-500": "hover:bg-blue-600/20",
 };
 
 export const hoverBgFx = (variant = "neutral-700") =>

@@ -24,7 +24,7 @@ const ScrollToTopButton = () => {
   return (
     <button
       onClick={handleClick}
-      className={`fixed bottom-8 right-2 md:right-10 z-40 p-2.5 rounded-full bg-orange-500 text-white shadow-lg transition-all duration-300 ${
+      className={`fixed bottom-8 right-2 md:right-10 z-40 p-2.5 rounded-full bg-orange-500 text-white shadow-lg transition-all duration-300 cursor-pointer ${
         show
           ? "opacity-100 translate-y-0"
           : "opacity-0 translate-y-4 pointer-events-none"

@@ -1,16 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { queryKeys } from "../constants/queryKeys";
 import { getPatients } from "../api/patientsApi";
+import { useGetData } from "./useQueryBase";
 
 export const usePatients = () => {
-  const patientsQuery = useQuery({
-    queryKey: queryKeys.patients,
-    queryFn: getPatients,
-  });
+  const { data, isLoading, isError } = useGetData(
+    queryKeys.patients,
+    getPatients,
+  );
 
   return {
-    patients: patientsQuery.data ?? [],
-    isLoading: patientsQuery.isLoading,
-    isError: patientsQuery.isError,
+    patients: data,
+    isPatientsLoading: isLoading,
+    isPatientsError: isError,
   };
 };

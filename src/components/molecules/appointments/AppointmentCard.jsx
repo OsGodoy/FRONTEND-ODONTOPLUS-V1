@@ -1,9 +1,11 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   BriefcaseMedical,
-  CircleOff,
   CircleQuestionMark,
   Clock,
   Info,
+  LoaderCircle,
   OctagonX,
   SquarePen,
   TriangleAlert,
@@ -15,66 +17,32 @@ import {
   DivContainerModal,
   DivContainerStart,
 } from "../../atoms/DivContainer";
-import { statusConfig } from "../../../utils/statusConfig";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import {
-  ButtonBgEmerald,
-  ButtonBgRose,
-  ButtonBorderWhite,
-} from "../../atoms/Buttons";
-import { useAppointments } from "../../../hooks/useAppointmentsData";
-import { toast } from "sonner";
+import { ButtonBorderWhite } from "../../atoms/Buttons";
 import Loading from "../../atoms/Loading";
-import { hoverBgFx, scaleFx } from "../../../utils/styles";
+import { useUpdateStatus } from "../../../hooks/useAppointmentsData";
+import { statusConfig } from "../../../utils/statusConfig";
+import { scaleFx } from "../../../utils/styles";
 
 const AppointmentCard = ({ appoint }) => {
   const [activeModal, setActiveModal] = useState(null);
-  const { updateStatus, isUpdatingStatus } = useAppointments();
+  const { updateStatus, isUpdatingStatus } = useUpdateStatus();
 
   const isOpen = Boolean(activeModal);
   const status = statusConfig(appoint.status);
-  const formatDate = new Date(appoint.date).toLocaleDateString("es-ES");
-
   const nextStatus = appoint.status === "pending" ? "confirmed" : "pending";
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString("es-ES");
+  };
 
   const handleStatusUpdate = async (targetStatus) => {
-    const messages = {
-      cancelled: {
-        loading: "Cancelando...",
-        success: "Cita cancelada",
-        error: "Error al cancelar",
-      },
-      confirmed: {
-        loading: "Confirmando...",
-        success: "Cita confirmada",
-        error: "Error",
-      },
-      pending: {
-        loading: "Cambiando a pendiente...",
-        success: "Estado actualizado",
-        error: "Error",
-      },
-    };
-
-    const msg = messages[targetStatus];
-
-    const actionPromise = updateStatus({
-      id: appoint.id,
-      status: targetStatus,
-    });
-
-    toast.promise(actionPromise, {
-      loading: msg.loading,
-      success: msg.success,
-      error: (err) => err?.response?.data?.message || msg.error,
-    });
-
     try {
-      await actionPromise;
+      await updateStatus({
+        id: appoint.id,
+        status: targetStatus,
+      });
       setActiveModal(null);
     } catch (error) {
-      console.error("Error en acción:", error);
+      console.error("Error en la actualización:", error);
     }
   };
 
@@ -90,7 +58,7 @@ const AppointmentCard = ({ appoint }) => {
           </h2>
           <div className="flex gap-4 w-full">
             <h3 className="flex items-center border border-blue-600 p-2 rounded">
-              {formatDate}
+              {formatDate(appoint.date)}
             </h3>
             <h3 className="flex items-center border border-blue-600 p-2 rounded gap-1">
               <Clock className="size-4" />
@@ -110,33 +78,45 @@ const AppointmentCard = ({ appoint }) => {
             </Link>
             <OctagonX
               onClick={() => setActiveModal("cancel")}
-              className={`stroke-[1.5] rotate-90 ${scaleFx("md")}`}
+              className={`stroke-[1.5] rotate-90 cursor-pointer ${scaleFx("md")}`}
             />
           </div>
         )}
       </DivContainerCenter>
 
       <DivContainerBetween className="border-t border-blue-600 pt-2">
-        <p
+        <div
           onClick={() => setActiveModal("update")}
-          className={`${status.className} p-2 rounded text-slate-800 font-semibold ${scaleFx("xs")}
+          className={`${status.className} p-2 rounded text-slate-800 font-semibold cursor-pointer ${scaleFx("xs")}
           ${appoint.status === "cancelled" ? "pointer-events-none" : "pointer-events-auto"}
           `}
         >
-          {status.label}
-        </p>
+          <p className="min-w-20 flex justify-center">
+            {isUpdatingStatus ? (
+              <LoaderCircle className="size-5 animate-spin" />
+            ) : (
+              status.label
+            )}
+          </p>
+        </div>
 
-        <div
-          onClick={() => setActiveModal("details")}
-          className="flex items-center justify-center gap-1 relative underline cursor-pointer hover:text-blue-400 transition-colors duration-75"
-        >
-          Ver detalles
-          {appoint.notes !== null && (
-            <Info className="size-4 text-amber-400 animate-bounce" />
-          )}
+        <div className="flex flex-col items-center justify-center gap-1">
+          <button
+            onClick={() => setActiveModal("details")}
+            className="flex underline cursor-pointer hover:text-blue-400 transition-colors duration-75"
+          >
+            Ver detalles
+            {appoint.notes?.trim() && (
+              <Info className="size-3 text-amber-400 animate-bounce" />
+            )}
+          </button>
+          <p className="text-xs text-blue-500">
+            Creada el: {formatDate(appoint.created_at)}
+          </p>
         </div>
       </DivContainerBetween>
 
+      {/* MODAL OVERLAY */}
       <DivContainerCenter
         className={`absolute h-full p-1 transition-all duration-300 z-10
         ${isOpen ? "opacity-100 scale-100" : "opacity-0 pointer-events-none scale-0"}`}
@@ -190,7 +170,7 @@ const AppointmentCard = ({ appoint }) => {
                         <div className="flex flex-col items-center justify-center">
                           ¿Quiere cancelar esta cita?
                           <span className="text-xs font-light">
-                            Las citas canceladas no aparencen en el listado
+                            Las citas canceladas no aparecen en el listado
                             principal
                           </span>
                         </div>

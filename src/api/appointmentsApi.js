@@ -1,32 +1,24 @@
+import { getData, patchData, postData } from "./apiFactory";
 import api from "./axios";
 
 export const getAppointments = async (filters = {}) => {
-  const params = new URLSearchParams();
+  const params = {
+    ...filters,
+  };
 
-  if (filters.search?.trim()) {
-    params.append("search", filters.search.trim());
-  }
-
-  const queryString = params.toString();
-  const url = queryString ? `/appointments?${queryString}` : `/appointments`;
-
-  const { data } = await api.get(url);
-  return data.data;
+  return await getData("/appointments", params);
 };
 
 export const createAppointment = async (appointment) => {
-  const { data } = await api.post("/appointments", appointment);
-  return data.data;
+  return await postData("/appointments", appointment);
 };
 
 export const updateAppointment = async ({ id, ...data }) => {
-  const response = await api.patch(`/appointments/${id}`, data);
-  return response.data;
+  return await patchData(`/appointments/${id}`, data);
 };
 
 export const appointmentStatus = async (id, status) => {
-  const { data } = await api.patch(`/appointments/${id}/status`, {
+  return await patchData(`/appointments/${id}/status`, {
     status,
   });
-  return data.data;
 };

@@ -1,11 +1,14 @@
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { toast } from "sonner";
 import {
   DivContainerCenter,
   DivContainerModal,
 } from "../components/atoms/DivContainer";
 import AppointmentForm from "../components/molecules/appointments/AppointmentForm";
-import { useAppointments } from "../hooks/useAppointmentsData";
+import {
+  useCreateAppointment,
+  useUpdateAppointment,
+  useGetAppointments,
+} from "../hooks/useAppointmentsData";
 import { usePatients } from "../hooks/usePatientsData";
 
 const Appointments = () => {
@@ -13,18 +16,12 @@ const Appointments = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const {
-    createAppointment,
-    updateAppointment,
-    isCreating,
-    isUpdating,
-    appointments,
-  } = useAppointments();
-  const {
-    patients,
-    isLoading: loadingPatients,
-    isError: errorPatients,
-  } = usePatients();
+  const { appointments } = useGetAppointments();
+
+  const { createAppointment, isCreating } = useCreateAppointment();
+  const { updateAppointmentAsync, isUpdating } = useUpdateAppointment();
+
+  const { patients, isPatientsLoading, isPatientsError } = usePatients();
 
   const appointmentToEdit =
     appointments?.find((app) => app.id === id) || location.state?.appointment;
@@ -46,24 +43,16 @@ const Appointments = () => {
       };
 
       const promise = isEditMode
-        ? updateAppointment({ id, ...payload })
+        ? updateAppointmentAsync({ id, ...payload })
         : createAppointment(payload);
-
-      toast.promise(promise, {
-        loading: isEditMode ? "Actualizando cita..." : "Creando cita...",
-        success: isEditMode
-          ? "Cita actualizada correctamente"
-          : "Cita creada correctamente",
-        error: (err) => err?.response?.data?.message || "Hubo un error",
-      });
 
       await promise;
 
       setTimeout(() => {
         navigate("/");
-      }, 500);
+      }, 800);
     } catch (error) {
-      console.error("Error en el formulario:", error);
+      console.error("Error:", error.message);
     }
   };
 
@@ -78,10 +67,10 @@ const Appointments = () => {
           type={isEditMode ? "update" : "create"}
           initialData={formattedData}
           onSubmit={handleSubmit}
-          isLoading={isCreating || isUpdating}
+          isPatientsLoading={isCreating || isUpdating}
           patients={patients}
-          loadingPatients={loadingPatients}
-          errorPatients={errorPatients}
+          loadingPatients={isPatientsLoading}
+          errorPatients={isPatientsError}
         />
       </DivContainerModal>
     </DivContainerCenter>

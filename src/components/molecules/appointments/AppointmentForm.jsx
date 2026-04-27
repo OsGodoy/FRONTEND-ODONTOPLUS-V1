@@ -46,19 +46,16 @@ const AppointmentForm = ({
 
   const shouldFetch = watchDate && watchStart && watchEnd;
 
-  const {
-    availableDoctors,
-    isLoading: loadingDocs,
-    isError: errorAvailable,
-  } = useAvailableDoctors(
-    shouldFetch
-      ? {
-          date: watchDate,
-          start_time: watchStart,
-          end_time: watchEnd,
-        }
-      : null,
-  );
+  const { availableDoctors, isAvailablesLoading, isAvailablesError } =
+    useAvailableDoctors(
+      shouldFetch
+        ? {
+            date: watchDate,
+            start_time: watchStart,
+            end_time: watchEnd,
+          }
+        : null,
+    );
 
   const finalDoctors = [...(availableDoctors || [])];
 
@@ -170,8 +167,8 @@ const AppointmentForm = ({
             });
           }}
           options={finalDoctors}
-          loading={loadingDocs}
-          error={errorAvailable}
+          loading={isAvailablesLoading}
+          error={isAvailablesError}
           disabled={!watchDate || !watchStart || !watchEnd}
           placeholder={
             !watchDate || !watchStart || !watchEnd
