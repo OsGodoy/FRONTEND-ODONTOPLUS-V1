@@ -22,6 +22,8 @@ import {
   ButtonBorderBlue,
   ButtonBorderOrange,
   ButtonBorderRose,
+  ButtonSearch,
+  ButtonSearchCancel,
 } from "../../atoms/Buttons";
 import { Link } from "react-router-dom";
 import AppointmentCard from "./AppointmentCard";
@@ -37,12 +39,16 @@ const AppointmentsList = () => {
 
   const [sortOrder, setSortOrder] = useState("recent");
 
-  const { appointments, isAppointmentsLoading, isAppointmentsError } =
-    useGetAppointments({
-      search: searchTerm,
-      status: showCancelled ? "cancelled" : undefined,
-      sort: sortOrder,
-    });
+  const {
+    appointments,
+    isAppointmentsLoading,
+    isAppointmentsError,
+    isAppointmentsFetching,
+  } = useGetAppointments({
+    search: searchTerm,
+    status: showCancelled ? "cancelled" : undefined,
+    sort: sortOrder,
+  });
 
   useEffect(() => {
     setInputValue(searchTerm);
@@ -87,40 +93,29 @@ const AppointmentsList = () => {
         </div>
 
         <DivContainerCenter className="flex-col mt-2">
-          <div className="flex gap-2 w-full">
-            <div className="relative flex-1">
+          <DivContainerCenter>
+            <DivContainerCenter className="flex-row w-full">
               <Input
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                className="rounded-full w-full"
+                className="rounded-l-full w-full"
                 border="border-0"
                 placeholder="Buscar..."
               />
               {searchTerm !== "" ? (
-                <button
-                  onClick={handleClearSearch}
-                  className="absolute top-0 right-0 pr-2 h-full"
-                >
-                  <CircleX
-                    className={`${scaleFx("md")} text-orange-500 stroke-[1.5] cursor-pointer`}
-                  />
-                </button>
+                <ButtonSearchCancel onClick={handleClearSearch}>
+                  <CircleX className={`${scaleFx("md")}`} />
+                </ButtonSearchCancel>
               ) : (
-                <button
+                <ButtonSearch
+                  isActive={inputValue !== ""}
                   onClick={handleSearch}
-                  className="absolute top-0 right-0 pr-3 h-full"
-                >
-                  <Search
-                    className={`${scaleFx("md")}
-                    ${inputValue !== "" ? "text-orange-500 pointer-events-auto cursor-pointer" : "text-slate-400 pointer-events-none"}
-                    `}
-                  />
-                </button>
+                />
               )}
-            </div>
-          </div>
+            </DivContainerCenter>
+          </DivContainerCenter>
 
           {/* BOTÓN "MÁS RECIENTES" */}
           <DivContainerEnd className="my-2">
@@ -150,22 +145,28 @@ const AppointmentsList = () => {
         </DivContainerCenter>
       </DivContainerCenter>
 
-      {isAppointmentsLoading ? (
-        <div className="flex items-center justify-center h-full">
-          <Loading />
-        </div>
+      {isAppointmentsFetching && searchTerm !== "" ? (
+        <DivContainerCenter className="h-full">
+          <Loading children="Buscando..." />
+        </DivContainerCenter>
       ) : (
-        <DivContainerGrid className="gap-2 overflow-y-auto w-full">
-          {appointments && appointments.length > 0 ? (
-            appointments.map((appoint) => (
-              <AppointmentCard key={appoint.id} appoint={appoint} />
-            ))
-          ) : (
-            <div className="w-full text-center py-20 opacity-40 italic">
-              No hay citas para mostrar
+        <>
+          {isAppointmentsLoading ? (
+            <div className="flex items-center justify-center h-full">
+              <Loading />
             </div>
+          ) : appointments && appointments.length > 0 ? (
+            <DivContainerGrid className="gap-2 overflow-y-auto w-full">
+              {appointments.map((appoint) => (
+                <AppointmentCard key={appoint.id} appoint={appoint} />
+              ))}
+            </DivContainerGrid>
+          ) : (
+            <DivContainerCenter className="h-full text-center">
+              Lista vacía...
+            </DivContainerCenter>
           )}
-        </DivContainerGrid>
+        </>
       )}
     </DivContainerCenter>
   );

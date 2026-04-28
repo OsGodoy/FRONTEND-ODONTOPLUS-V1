@@ -1,3 +1,4 @@
+import { Search } from "lucide-react";
 import { scaleFx } from "../../utils/styles";
 
 export const ButtonBorderAmber = ({ children, className = "", ...props }) => {
@@ -179,6 +180,46 @@ export const ButtonCarousel = ({
   return (
     <button
       className={`border border-neutral-700 bg-neutral-900/80 p-2 rounded-full ${className} ${scaleFx("sm")}`}
+      onClick={onClick}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
+export const ButtonSearch = ({
+  isActive = false,
+  onClick,
+  className = "",
+  ...props
+}) => {
+  const stateClasses = isActive
+    ? "bg-emerald-500 text-white pointer-events-auto cursor-pointer"
+    : "bg-white border-l border-mist-300 text-mist-400 pointer-events-none";
+
+  return (
+    <button
+      onClick={onClick}
+      className={`px-2 h-full rounded-r-full ${stateClasses} ${className}`}
+      {...props}
+    >
+      <Search className={scaleFx("md")} />
+    </button>
+  );
+};
+
+export const ButtonSearchCancel = ({
+  children,
+  className = "",
+  onClick,
+  bgColor = "bg-rose-400",
+  textColor = "text-white",
+  ...props
+}) => {
+  return (
+    <button
+      className={`px-2 h-full rounded-r-full pointer-events-auto cursor-pointer ${className} ${bgColor} ${textColor}`}
       onClick={onClick}
       {...props}
     >
